@@ -1,28 +1,40 @@
 const express = require('express');
 const http = require('http');
 const url = require('url');
-const WebSocket = require('ws');
 const path = require('path');
+const request = require('request');
  
 const app = express();
  
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
- 
-wss.on('connection', function connection(ws, req) {
-  console.log("connected..");
+//Global Vars
+app.use((req, res, next) =>{
+  res.locals.errors = null;
+  next();
+})
 
-  const location = url.parse(req.url, true);
- 
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+app.get('/', (req, res, next) => {
+
+  let options = {
+    url: 'https://api.kraken.com/0/public/Ticker?pair=etheur'
+  };
+  request(options).pipe(res);
+
+  // I WANT TO GET THE DATA from options and send to data variable so I can render it on index.ejs
+
+  // const data = ?
+
+  res.render('index', {
+    title: 'ARB MATRIX',
+    data: data
   });
- 
-  // ws.send('something');
+
 });
  
 server.listen(process.env.PORT || 8080, function listening() {
