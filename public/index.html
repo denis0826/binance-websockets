@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Binance WebSocket</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <style>
+    .table-main, h2 {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .no-border{
+      border: none;
+      margin: 0;
+    }
+    th span.glyphicon.glyphicon-refresh {
+      color: #46b8da;
+    }
+    .vertical-text {
+      -ms-transform: rotate(90deg);
+      -moz-transform: rotate(90deg);
+      -webkit-transform: rotate(90deg);
+      transform: rotate(90deg);
+      -ms-transform-origin: left top 0;
+      -moz-transform-origin: left top 0;
+      -webkit-transform-origin: left top 0;
+      transform-origin: left top 0;
+      background: #E23737;
+      color: #fff;
+      margin-left: 40px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-transform: uppercase;
+      border: 1px solid #B52C2C;
+      text-transform: 1px 1px 0px rgba(0, 0, 0, 0.5);
+      box-shadow: 2px -2px 0px rgba(0, 0, 0, 0.1);
+      float: left;
+    }
+    th{
+      text-align: center;
+      vertical-align: middle !important;
+    }
+    .p-0{
+      padding:0 !important;
+    }
+    .trans-bt{
+      border-top: 1px solid transparent !important;
+    }
+    .trans-bl {
+      border-left: 1px solid transparent !important;
+    }
+    .trans-bb {
+      border-bottom: 1px solid transparent !important;
+    }
+    .trans-br {
+      border-right: 1px solid transparent !important;
+    }
+    .d-block {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <h2>ARB MATRIX</h2>
+      <div class="bs" data-id="contextual-table">
+        <table class="table table-main table-bordered">
+          <thead>
+            <tr>
+              <th class="success">
+                <span class="glyphicon glyphicon-refresh"></span>
+                <div class="text-update">Last Update: Mon</div>
+                <div class="text-date"></div>22nd January 2018</div>
+                <div class="text-time"></div>15:19</div>
+              </th>
+              <th class="active vc">
+                <h4>SELL SIDE EXCHANGE</h4>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="p-0 active">
+                <h4 class="break">
+                    <span class="d-block">B</span> 
+                    <span class="d-block">U</span> 
+                    <span class="d-block">Y</span> 
+                    <span class="d-block">&nbsp;</span> 
+                    <span class="d-block">S</span> 
+                    <span class="d-block">I</span> 
+                    <span class="d-block">D</span> 
+                    <span class="d-block">E</span> 
+                </h4> 
+              </td>
+              <td class="p-0">
+                  <table class="table table-bordered no-border">
+                    <th class="trans-bt trans-bl" colspan="1"></th>
+                    <th class="trans-bt trans-bl" >MERCADO</th>
+                    <th class="trans-bt" >LUNO</th>
+                    <th class="trans-bt" >COINSECURE</th>
+                    <th class="trans-bt" >BX.IN.TH</th>
+                    <th class="trans-bt" >ACX</th>
+                    <th class="trans-bt" >URDUBIT</th>
+                    <tr>
+                      <td class="trans-bl">KRAKEN</td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class="trans-br"></td>
+                    </tr>
+                    <tr>
+                      <td class="trans-bl">BITFINEX</td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class="trans-br"></td>
+                    </tr>
+                    <tr>
+                      <td class="trans-bl">COINFLOOR</td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class=""></td>
+                      <td class="trans-br"></td>
+                    </tr>
+                    <tr>
+                      <td class="trans-bl trans-bb">BITSTAMP</td>
+                      <td class="trans-bb"></td>
+                      <td class="trans-bb"></td>
+                      <td class="trans-bb"></td>
+                      <td class="trans-bb"></td>
+                      <td class="trans-bb"></td>
+                      <td class="trans-bb trans-br"></td>
+                    </tr>
+                  </table>
+              </td>
+            </tr>            
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+        <button id="sendReq" class="btn btn-info btn-lg pull-right"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+    </div>
+  </div>
+
+  <script>
+    var ws = new WebSocket('wss://stream.binance.com:9443/ws/ethbtc@depth');
+    ws.onopen = function () {
+        console.log('websocket is connected ...')
+        // ws.send(`${new Date()}`)
+    }
+    ws.onmessage = function (event) {
+      var json = JSON.parse(event.data);
+      console.log(json);
+    }
+
+    document.querySelector('button').onclick = function() {
+      var text = document.getElementById('text').value;
+      // sock.send(text);
+
+      // sock.send(`${new Date()}`);
+    };
+
+  </script>
+
+</body>
+</html>
