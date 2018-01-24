@@ -31,10 +31,15 @@ function get(url) {
 app.get('/', (req, res, next) => {
   
   Promise.all([
-    get('https://api.kraken.com/0/public/Ticker?pair=etheur'),
-    get('https://api.bitso.com/v3/ticker?book=btc_mxn'),
-    get('https://www.mercadobitcoin.net/api/btc/ticker/')
-  ]).then(([data1, data2, data3]) => {
+    get('https://api.kraken.com/0/public/Ticker?pair=etheur'), //1
+    get('https://api.bitso.com/v3/ticker?book=btc_mxn'), //2
+    get('https://www.mercadobitcoin.net/api/btc/ticker/'), //3
+    get('https://www.bitstamp.net/api/ticker/'), //4
+    get('https://webapi.coinfloor.co.uk:8090/bist/XBT/GBP/ticker/'), //5
+    get('https://api.mybitx.com/api/1/ticker?pair=XBTZAR'), //6
+    get('https://api.coinsecure.in/v1/exchange/ticker'),
+    get('https://bx.in.th/api/')
+  ]).then(([data1, data2, data3, data4, data5, data6, data7, data8]) => {
     const json =  data1.result;
     for(key in json) {
       if(json.hasOwnProperty(key)) {
@@ -42,11 +47,16 @@ app.get('/', (req, res, next) => {
         data1 = value.c;
       }
     }
+    console.log(data8);
     res.render('index',{
       title: 'ARB MATRIX',
-      data1,
-      data2: data2.payload.last,
-      data3: data3.ticker.last
+      coinKraken : data1,
+      coinBitso: data2.payload.last,
+      coinMercado: data3.ticker.last,
+      coinBitstamp: data4.last,
+      coinCoinfloor: data5.last,
+      coinLuno: data6.last_trade,
+      coinCoinsecure: data7.message.lastPrice
     });    
   });
   
