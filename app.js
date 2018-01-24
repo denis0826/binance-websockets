@@ -2,8 +2,8 @@ const express = require('express');
 const http = require('http');
 const url = require('url');
 const path = require('path');
-const rp = require('request-promise');
 const app = express();
+const fetch = require('node-fetch');
  
 const server = http.createServer(app);
 
@@ -19,78 +19,37 @@ app.use((req, res, next) =>{
 })
 
 
+function get(url) {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(err => reject(err))
+  })
+}
+
 app.get('/', (req, res, next) => {
-
-  const coin1 = {
-    uri: 'https://api.kraken.com/0/public/Ticker',
-    qs:{
-      pair: 'etheur'
-    },
-    headers: {
-      'User-Agent': 'Request-Promise'
-    },
-    json: true // Automatically parses the JSON string in the response
-  };
-
-  const coin2 = {
-    uri: 'https://api.bitso.com/v3/ticker',
-    qs:{
-      book: 'btc_mxn'
-    },
-    headers: {
-      'User-Agent': 'Request-Promise'
-    },
-    json: true // Automatically parses the JSON string in the response
-  };
-
-  const coin3 = {
-    uri: 'https://www.mercadobitcoin.net/api/btc/ticker/',
-    headers: {
-      'User-Agent': 'Request-Promise'
-    },
-    json: true // Automatically parses the JSON string in the response
-  };
-
   
-  let data1, data2, data3 = '';
-  rp(coin1)
-    .then(function(resp){
-      const json = resp.result;  
-      for(key in json) {
-        if(json.hasOwnProperty(key)) {
-          var value = json[key];
-          data1 = value.c;
-        }
+  Promise.all([
+    get('https://api.kraken.com/0/public/Ticker?pair=etheur'),
+    get('https://api.bitso.com/v3/ticker?book=btc_mxn'),
+    get('https://www.mercadobitcoin.net/api/btc/ticker/')
+  ]).then(([data1, data2, data3]) => {
+    const json =  data1.result;
+    for(key in json) {
+      if(json.hasOwnProperty(key)) {
+        var value = json[key];
+        data1 = value.c;
       }
-    })    
-    .then(function() {
-      return rp(coin2); 
-    })
-    .then(function(resp) {
-      const json = resp.payload;  
-      data2 = json.last;
-    })
-    .then(function() {
-      return rp(coin3); 
-    })
-    .then(function(resp) {
-      const json = resp.ticker;  
-      data3 = json.last;
-    })
-    .then(function(){
-      res.render('index',{
-        title: 'ARB MATRIX',
-        data1,
-        data2,
-        data3
-      });
-    })
-    .catch(function (err) {
-      // Crawling failed or Cheerio choked...
-      console.log(err)
-    });;
-
-    
+    }
+    res.render('index',{
+      title: 'ARB MATRIX',
+      data1,
+      data2: data2.payload.last,
+      data3: data3.ticker.last
+    });    
+  });
+  
 });
  
 server.listen(process.env.PORT || 8080, function listening() {
