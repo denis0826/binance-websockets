@@ -47,7 +47,7 @@ app.get('/', (req, res, next) => {
         data1 = value.c;
       }
     }
-    console.log(data8);
+    // console.log(data8);
     res.render('index',{
       title: 'ARB MATRIX',
       coinKraken : data1,
