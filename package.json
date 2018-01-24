@@ -19,8 +19,10 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "ejs": "^2.5.7",
+    "ejs-promise": "^0.3.3",
     "express": "^4.16.2",
     "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "ws": "^4.0.0"
   }
 }
